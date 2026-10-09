@@ -1,1 +1,2 @@
 # gitinject-demo
+update readme
