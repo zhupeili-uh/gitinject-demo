@@ -1,0 +1,27 @@
+name: AI PR Review
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # VULNERABILITY 1: Default checkout persists GITHUB_TOKEN in .git/config
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      # VULNERABILITY 2: Passing untrusted external input directly to the environment
+      - name: Run AI Agent Review
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python ai_reviewer.py
